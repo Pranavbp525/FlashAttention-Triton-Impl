@@ -41,7 +41,7 @@ def test_op(BATCH_SIZE: int,
     softmax_scale = 1/(HEAD_DIM**0.5)
     d0 = torch.randn_like(Q)
 
-    MASK = torck.tril(torch.ones(SEQ_LEN, SEQ_LEN), device="cuda")
+    MASK = torch.tril(torch.ones(SEQ_LEN, SEQ_LEN), device="cuda")
     P = torch.matmul(Q, K.transpose(2,3))*softmax_scale
 
     if causal:
@@ -68,7 +68,10 @@ def test_op(BATCH_SIZE: int,
     assert torch.allclose(ref_dQ, tri_dQ, atol=atol, rtol=rtol)
     assert torch.allclose(ref_dV, tri_dV, atol=atol, rtol=rtol)
 
-
+if __name__=="__main__":
+    test_op(BATCH_SIZE=8, NUM_HEADS=16, SEQ_LEN=4096, HEAD_DIM=64, causal=True)
+    test_op(BATCH_SIZE=8, NUM_HEADS=16, SEQ_LEN=4096, HEAD_DIM=64, causal=False)
+    print("passed")
 
 
 
